@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Morning Matrix</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14171c;
+    --ink-soft:#262b33;
+    --paper:#faf7f1;
+    --paper-line:#dcd6c8;
+    --amber:#dd9a34;
+    --signal:#3a5fd9;
+    --text:#22252b;
+    --text-dim:#6b6f78;
+    --ok:#3f8f5f;
+  }
+
+  *{box-sizing:border-box;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+
+  html{background:var(--ink);}
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--text);
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:var(--signal); text-decoration-thickness:1px; text-underline-offset:2px;}
+  a:hover{color:var(--ink);}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--signal); outline-offset:3px; border-radius:2px;}
+
+  /* ---------- MASTHEAD ---------- */
+  .masthead{
+    background:var(--ink);
+    color:#f2f0ea;
+    padding:22px clamp(20px,5vw,48px) 18px;
+    border-bottom:1px solid #000;
+  }
+  .masthead-row{
+    max-width:760px;
+    margin:0 auto;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .brand{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:clamp(28px,5vw,40px);
+    letter-spacing:-0.01em;
+    line-height:1;
+    margin:0;
+  }
+  .brand span{color:var(--amber); font-style:italic;}
+  .tagline{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:#9a9d9f;
+    margin-top:8px;
+  }
+  .meta{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    color:#c9cbc5;
+    text-align:right;
+    line-height:1.7;
+  }
+  .meta .clock{color:var(--amber); font-weight:600;}
+  .meta .dot{color:var(--ok);}
+
+  /* ---------- TICKER & CONTROLS ---------- */
+  .ticker{
+    background:var(--ink-soft);
+    border-bottom:1px solid #000;
+    overflow:hidden;
+    white-space:nowrap;
+  }
+  .ticker-track{
+    max-width:760px;
+    margin:0 auto;
+    padding:9px clamp(20px,5vw,48px);
+    display:flex;
+    gap:22px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:#b7bab5;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .ticker-track::-webkit-scrollbar{display:none;}
+  .ticker-item{display:flex; align-items:center; gap:6px; flex-shrink:0;}
+  .ticker-item i{
+    width:6px; height:6px; border-radius:50%; display:inline-block; background:var(--amber);
+  }
+  .ticker-item:nth-child(2) i{background:var(--signal);}
+  .ticker-item:nth-child(3) i{background:#c25b4a;}
+  .ticker-item:nth-child(4) i{background:var(--ok);}
+
+  .archive-bar{
+    background:var(--ink);
+    border-bottom:1px solid #000;
+    padding:10px clamp(20px,5vw,48px);
+  }
+  .archive-row{
+    max-width:760px;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:#9a9d9f;
+  }
+  .ctrl-group{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .ctrl-group.search-group{
+    flex:1;
+    min-width:180px;
+  }
+  .archive-bar input{
+    background:var(--ink-soft);
+    border:1px solid #3a3f47;
+    color:#f2f0ea;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    padding:5px 8px;
+    border-radius:3px;
+    outline:none;
+  }
+  .archive-bar input[type="text"]{
+    width:100%;
+  }
+  .archive-bar input:focus{
+    border-color:var(--amber);
+  }
+  .btn-reset{
+    background:var(--amber);
+    color:var(--ink);
+    border:none;
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+    font-size:10.5px;
+    letter-spacing:0.05em;
+    padding:6px 10px;
+    border-radius:3px;
+    cursor:pointer;
+  }
+  .btn-reset:hover{
+    background:#ebd27a;
+  }
+
+  /* ---------- CONTENT ---------- */
+  main{
+    max-width:760px;
+    margin:0 auto;
+    padding:44px clamp(20px,5vw,48px) 80px;
+  }
+
+  #content{animation:fade-in .5s ease both;}
+  @keyframes fade-in{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  #content > h2{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin:52px 0 20px;
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:26px;
+    letter-spacing:-0.01em;
+    color:var(--ink);
+  }
+  #content > h2:first-of-type{margin-top:0;}
+  #content > h2::before{
+    content: attr(data-index);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0.04em;
+    color:var(--paper);
+    background:var(--ink);
+    padding:5px 8px;
+    border-radius:3px;
+    flex-shrink:0;
+  }
+  #content > h2::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--paper-line);
+    align-self:center;
+    margin-left:4px;
+  }
+
+  #content > ul{
+    list-style:none;
+    margin:0 0 8px;
+    padding:0;
+  }
+  #content > ul > li{
+    position:relative;
+    padding:14px 0 14px 22px;
+    border-top:1px solid var(--paper-line);
+    font-size:15.5px;
+    line-height:1.65;
+  }
+  #content > ul > li:last-child{border-bottom:1px solid var(--paper-line);}
+  #content > ul > li::before{
+    content:"›";
+    position:absolute;
+    left:0;
+    top:13px;
+    color:var(--amber);
+    font-weight:700;
+    font-size:17px;
+  }
+  #content > ul > li strong{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+    font-size:11px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--signal);
+    background:rgba(58,95,217,0.08);
+    padding:2px 6px;
+    border-radius:3px;
+    margin-right:2px;
+  }
+
+  #content > p{
+    font-size:16px;
+    line-height:1.75;
+    color:var(--text);
+    margin:0 0 18px;
+  }
+  #content > p:first-of-type::first-letter{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:2.5em;
+    float:left;
+    line-height:0.85;
+    padding:4px 6px 0 0;
+    color:var(--ink);
+  }
+
+  #content blockquote{
+    margin:24px 0;
+    padding:4px 0 4px 18px;
+    border-left:3px solid var(--amber);
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:18px;
+    color:var(--ink-soft);
+  }
+
+  code{
+    font-family:'JetBrains Mono', monospace;
+    background:rgba(0,0,0,0.05);
+    padding:1px 5px;
+    border-radius:3px;
+    font-size:0.9em;
+  }
+
+  mark{
+    background:rgba(221,154,52,0.35);
+    color:inherit;
+    padding:1px 3px;
+    border-radius:2px;
+    border-bottom:2px solid var(--amber);
+  }
+
+  /* Sources section gets a distinct index-card treatment */
+  #content > h2[data-index="04"] ~ ul,
+  #content > ul.sources-list{
+    list-style:none; margin:0; padding:0;
+  }
+  .sources-list li{
+    counter-increment: src;
+    padding:11px 0 11px 34px;
+    position:relative;
+    border-top:1px solid var(--paper-line);
+    font-size:14.5px;
+  }
+  .sources-list li:last-child{border-bottom:1px solid var(--paper-line);}
+  .sources-list li::before{
+    content: counter(src, decimal-leading-zero);
+    position:absolute;
+    left:0; top:11px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--text-dim);
+  }
+  .sources-list{counter-reset: src;}
+
+  footer{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 clamp(20px,5vw,48px) 60px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--text-dim);
+    letter-spacing:0.03em;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+    border-top:1px solid var(--paper-line);
+    padding-top:18px;
+  }
+
+  /* ---------- LOADING / ERROR ---------- */
+  .skeleton{max-width:760px; margin:0 auto; padding:44px clamp(20px,5vw,48px);}
+  .sk-line{height:14px; background:linear-gradient(90deg,#ece7db 25%,#f3efe4 37%,#ece7db 63%); background-size:400% 100%; animation:sk 1.4s ease infinite; border-radius:4px; margin-bottom:12px;}
+  @keyframes sk{0%{background-position:100% 0;} 100%{background-position:0 0;}}
+  .sk-line.w60{width:60%;}
+  .sk-line.w40{width:40%; height:22px; margin-bottom:24px;}
+
+  .error-box{
+    max-width:760px; margin:60px auto; padding:24px;
+    border:1px solid #d9c3bd; background:#fbf1ee; border-radius:6px;
+    font-family:'JetBrains Mono', monospace; font-size:13px; color:#8a3b2e;
+  }
+</style>
+</head>
+<body>
+
+  <div class="masthead">
+    <div class="masthead-row">
+      <div>
+        <p class="brand">Morning <span>Matrix</span></p>
+        <p class="tagline">Daily signal on AI · Robotics · Hardware</p>
+      </div>
+      <div class="meta">
+        <div id="meta-date">—</div>
+        <div><span class="dot">●</span> <span id="meta-issue">ISSUE —</span> · <span class="clock" id="meta-clock">--:--:--</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ticker">
+    <div class="ticker-track">
+      <span class="ticker-item"><i></i>AI</span>
+      <span class="ticker-item"><i></i>ROBOTICS</span>
+      <span class="ticker-item"><i></i>HARDWARE</span>
+      <span class="ticker-item"><i></i>CLIMATE</span>
+      <span class="ticker-item" style="color:#7d807b;">UPDATED DAILY, 22:00</span>
+    </div>
+  </div>
+
+  <div class="archive-bar">
+    <div class="archive-row">
+      <div class="ctrl-group">
+        <label for="date-select">ARCHIVE:</label>
+        <input type="date" id="date-select">
+      </div>
+      <div class="ctrl-group search-group">
+        <label for="keyword-search">FILTER:</label>
+        <input type="text" id="keyword-search" placeholder="Search keywords...">
+      </div>
+      <button id="btn-latest" class="btn-reset">LATEST</button>
+    </div>
+  </div>
+
+  <main>
+    <div id="skeleton" class="skeleton">
+      <div class="sk-line w40"></div>
+      <div class="sk-line"></div>
+      <div class="sk-line"></div>
+      <div class="sk-line w60"></div>
+    </div>
+    <div id="content" style="display:none;"></div>
+  </main>
+
+  <footer>
+    <span>The Morning Matrix — compiled automatically, read manually.</span>
+    <span id="foot-date">—</span>
+  </footer>
+
+<script>
+  // ---- header date / issue / clock ----
+  const now = new Date();
+  const dateFmt = now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('meta-date').textContent = dateFmt;
+  document.getElementById('foot-date').textContent = now.toLocaleDateString('en-US', { year:'numeric', month:'short', day:'2-digit' });
+
+  const epoch = new Date('2026-01-01T00:00:00');
+  const issueNo = Math.max(1, Math.floor((now - epoch) / 86400000) + 1);
+  document.getElementById('meta-issue').textContent = 'ISSUE №' + String(issueNo).padStart(4,'0');
+
+  function tickClock(){
+    document.getElementById('meta-clock').textContent =
+      new Date().toLocaleTimeString('en-US', { hour12:false });
+  }
+  tickClock();
+  setInterval(tickClock, 1000);
+
+  // ---- state & DOM elements ----
+  let currentRawMarkdown = "";
+  const contentEl = document.getElementById('content');
+  const skeletonEl = document.getElementById('skeleton');
+  const dateSelect = document.getElementById('date-select');
+  const searchInput = document.getElementById('keyword-search');
+  const btnLatest = document.getElementById('btn-latest');
+
+  // ---- safe DOM text node highlighter ----
+  function applyHighlight(container, keyword) {
+    if (!keyword) return;
+    const re = new RegExp(`(${keyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi');
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+
+    nodes.forEach(node => {
+      if (['SCRIPT', 'STYLE', 'MARK', 'A'].includes(node.parentNode.tagName)) return;
+      const val = node.nodeValue;
+      if (re.test(val)) {
+        const span = document.createElement('span');
+        span.innerHTML = val.replace(re, '<mark>$1</mark>');
+        node.parentNode.replaceChild(span, node);
+      }
+    });
+  }
+
+  // ---- render pipeline matching original styling rules ----
+  function renderDigest(markdownText) {
+    currentRawMarkdown = markdownText;
+    const html = marked.parse(markdownText);
+    contentEl.innerHTML = html;
+
+    // Drop top-level H1 if present (masthead handles title)
+    const h1 = contentEl.querySelector('h1');
+    if (h1) h1.remove();
+
+    // Tag each H2 with zero-padded index badges
+    const h2s = contentEl.querySelectorAll('h2');
+    h2s.forEach((h2, i) => {
+      const raw = h2.textContent.trim();
+      const match = raw.match(/^(\d+)\.\s*(.+)$/);
+      const num = match ? match[1].padStart(2,'0') : String(i+1).padStart(2,'0');
+      const title = match ? match[2] : raw;
+      h2.textContent = title;
+      h2.setAttribute('data-index', num);
+
+      // Apply distinct index-card list styling to sources
+      if (/sources|citations/i.test(title)) {
+        let sib = h2.nextElementSibling;
+        while (sib && sib.tagName !== 'UL') sib = sib.nextElementSibling;
+        if (sib) sib.classList.add('sources-list');
+      }
+    });
+
+    // Apply live keyword search highlights
+    const query = searchInput.value.trim();
+    if (query) {
+      applyHighlight(contentEl, query);
+    }
+
+    skeletonEl.style.display = 'none';
+    contentEl.style.display = 'block';
+  }
+
+  // ---- fetch digest loader ----
+  function fetchDigest(url) {
+    skeletonEl.style.display = 'block';
+    contentEl.style.display = 'none';
+
+    // Remove old error boxes if any
+    const oldError = document.querySelector('.error-box');
+    if (oldError) oldError.remove();
+
+    fetch(url, { cache: 'no-store' })
+      .then(res => {
+        if (!res.ok) throw new Error('File not found (' + res.status + ')');
+        return res.text();
+      })
+      .then(text => {
+        renderDigest(text);
+      })
+      .catch(err => {
+        skeletonEl.style.display = 'none';
+        const box = document.createElement('div');
+        box.className = 'error-box';
+        box.textContent = 'Could not load digest from ' + url + ' — ' + err.message;
+        document.querySelector('main').appendChild(box);
+      });
+  }
+
+  // ---- event listeners ----
+  dateSelect.addEventListener('change', (e) => {
+    if (e.target.value) {
+      fetchDigest(`./posts/${e.target.value}.md`);
+    }
+  });
+
+  searchInput.addEventListener('input', () => {
+    if (currentRawMarkdown) {
+      renderDigest(currentRawMarkdown);
+    }
+  });
+
+  btnLatest.addEventListener('click', () => {
+    dateSelect.value = '';
+    searchInput.value = '';
+    fetchDigest('./latest.md');
+  });
+
+  // Initial load
+  fetchDigest('./latest.md');
+</script>
+
+</body>
+</html>
