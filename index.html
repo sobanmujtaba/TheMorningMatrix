@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
 <title>The Morning Matrix</title>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
 <style>
   :root{
     --ink:#14171c;
     --ink-soft:#262b33;
     --paper:#faf7f1;
-    --paper-line:#dcd6c8;
+    --paper-line:#e2ddd2;
     --amber:#dd9a34;
     --signal:#3a5fd9;
     --text:#22252b;
@@ -33,12 +33,13 @@
     background:var(--paper);
     color:var(--text);
     font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height:1.8;
     -webkit-font-smoothing:antialiased;
   }
 
   a{color:var(--signal); text-decoration-thickness:1px; text-underline-offset:2px;}
   a:hover{color:var(--ink);}
-  a:focus-visible, button:focus-visible{outline:2px solid var(--signal); outline-offset:3px; border-radius:2px;}
+  a:focus-visible, button:focus-visible{outline:2px solid var(--signal); outline-offset:4px; border-radius:2px;}
 
   /* ---------- MASTHEAD ---------- */
   .masthead{
@@ -60,7 +61,7 @@
     font-family:'Fraunces', serif;
     font-weight:700;
     font-size:clamp(28px,5vw,40px);
-    letter-spacing:-0.01em;
+    letter-spacing:-0.02em;
     line-height:1;
     margin:0;
   }
@@ -89,6 +90,9 @@
     border-bottom:1px solid #000;
     overflow:hidden;
     white-space:nowrap;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    position: relative;
+    z-index: 10;
   }
   .ticker-track{
     max-width:760px;
@@ -117,6 +121,9 @@
     background:var(--ink);
     border-bottom:1px solid #000;
     padding:10px clamp(20px,5vw,48px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    position: relative;
+    z-index: 5;
   }
   .archive-row{
     max-width:760px;
@@ -144,9 +151,10 @@
     color:#f2f0ea;
     font-family:'JetBrains Mono', monospace;
     font-size:11px;
-    padding:5px 8px;
+    padding:5px 12px;
     border-radius:3px;
     outline:none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   .archive-bar input[type="text"]{
     width:100%;
@@ -165,9 +173,11 @@
     padding:6px 10px;
     border-radius:3px;
     cursor:pointer;
+    transition: all 0.2s ease;
   }
   .btn-reset:hover{
     background:#ebd27a;
+    transform: scale(1.02);
   }
 
   /* ---------- CONTENT ---------- */
@@ -196,7 +206,7 @@
     content: attr(data-index);
     font-family:'JetBrains Mono', monospace;
     font-size:12px;
-    font-weight:600;
+    font-weight:700;
     letter-spacing:0.04em;
     color:var(--paper);
     background:var(--ink);
@@ -220,16 +230,20 @@
   }
   #content > ul > li{
     position:relative;
-    padding:14px 0 14px 22px;
+    padding:14px 10px 14px 22px;
     border-top:1px solid var(--paper-line);
     font-size:15.5px;
     line-height:1.65;
+    transition: background 0.2s ease;
+  }
+  #content > ul > li:hover{
+    background:rgba(0,0,0,0.02);
   }
   #content > ul > li:last-child{border-bottom:1px solid var(--paper-line);}
   #content > ul > li::before{
     content:"›";
     position:absolute;
-    left:0;
+    left:6px;
     top:13px;
     color:var(--amber);
     font-weight:700;
@@ -251,7 +265,6 @@
 
   #content > p{
     font-size:16px;
-    line-height:1.75;
     color:var(--text);
     margin:0 0 18px;
   }
@@ -298,16 +311,22 @@
   }
   .sources-list li{
     counter-increment: src;
-    padding:11px 0 11px 34px;
+    padding:11px 10px 11px 34px;
     position:relative;
     border-top:1px solid var(--paper-line);
     font-size:14.5px;
+    transition: background 0.2s ease;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  .sources-list li:hover{
+    background:rgba(0,0,0,0.02);
   }
   .sources-list li:last-child{border-bottom:1px solid var(--paper-line);}
   .sources-list li::before{
     content: counter(src, decimal-leading-zero);
     position:absolute;
-    left:0; top:11px;
+    left:6px; top:11px;
     font-family:'JetBrains Mono', monospace;
     font-size:12px;
     color:var(--text-dim);
@@ -345,59 +364,53 @@
 </style>
 </head>
 <body>
-
-  <div class="masthead">
-    <div class="masthead-row">
-      <div>
-        <p class="brand">Morning <span>Matrix</span></p>
-        <p class="tagline">Daily signal on AI · Robotics · Hardware</p>
-      </div>
-      <div class="meta">
-        <div id="meta-date">—</div>
-        <div><span class="dot">●</span> <span id="meta-issue">ISSUE —</span> · <span class="clock" id="meta-clock">--:--:--</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="ticker">
-    <div class="ticker-track">
-      <span class="ticker-item"><i></i>AI</span>
-      <span class="ticker-item"><i></i>ROBOTICS</span>
-      <span class="ticker-item"><i></i>HARDWARE</span>
-      <span class="ticker-item"><i></i>CLIMATE</span>
-      <span class="ticker-item" style="color:#7d807b;">UPDATED DAILY, 22:00</span>
-    </div>
-  </div>
-
-  <div class="archive-bar">
-    <div class="archive-row">
-      <div class="ctrl-group">
-        <label for="date-select">ARCHIVE:</label>
-        <input type="date" id="date-select">
-      </div>
-      <div class="ctrl-group search-group">
-        <label for="keyword-search">FILTER:</label>
-        <input type="text" id="keyword-search" placeholder="Search keywords...">
-      </div>
-      <button id="btn-latest" class="btn-reset">LATEST</button>
-    </div>
-  </div>
-
-  <main>
-    <div id="skeleton" class="skeleton">
-      <div class="sk-line w40"></div>
-      <div class="sk-line"></div>
-      <div class="sk-line"></div>
-      <div class="sk-line w60"></div>
-    </div>
-    <div id="content" style="display:none;"></div>
-  </main>
-
-  <footer>
-    <span>The Morning Matrix — compiled automatically, read manually.</span>
-    <span id="foot-date">—</span>
-  </footer>
-
+<div class="masthead">
+<div class="masthead-row">
+<div>
+<p class="brand">Morning <span>Matrix</span></p>
+<p class="tagline">Daily signal on AI · Robotics · Hardware</p>
+</div>
+<div class="meta">
+<div id="meta-date">—</div>
+<div><span class="dot">●</span> <span id="meta-issue">ISSUE —</span> · <span class="clock" id="meta-clock">--:--:--</span></div>
+</div>
+</div>
+</div>
+<div class="ticker">
+<div class="ticker-track">
+<span class="ticker-item"><i></i>AI</span>
+<span class="ticker-item"><i></i>ROBOTICS</span>
+<span class="ticker-item"><i></i>HARDWARE</span>
+<span class="ticker-item"><i></i>CLIMATE</span>
+<span class="ticker-item" style="color:#7d807b;">UPDATED DAILY, 22:00</span>
+</div>
+</div>
+<div class="archive-bar">
+<div class="archive-row">
+<div class="ctrl-group">
+<label for="date-select">ARCHIVE:</label>
+<input id="date-select" type="date"/>
+</div>
+<div class="ctrl-group search-group">
+<label for="keyword-search">FILTER:</label>
+<input id="keyword-search" placeholder="Search keywords..." type="text"/>
+</div>
+<button class="btn-reset" id="btn-latest">LATEST</button>
+</div>
+</div>
+<main>
+<div class="skeleton" id="skeleton">
+<div class="sk-line w40"></div>
+<div class="sk-line"></div>
+<div class="sk-line"></div>
+<div class="sk-line w60"></div>
+</div>
+<div id="content" style="display:none;"></div>
+</main>
+<footer>
+<span>The Morning Matrix — compiled automatically, read manually.</span>
+<span id="foot-date">—</span>
+</footer>
 <script>
   // ---- header date / issue / clock ----
   const now = new Date();
@@ -467,7 +480,18 @@
       if (/sources|citations/i.test(title)) {
         let sib = h2.nextElementSibling;
         while (sib && sib.tagName !== 'UL') sib = sib.nextElementSibling;
-        if (sib) sib.classList.add('sources-list');
+        if (sib) {
+          sib.classList.add('sources-list');
+          // Clean up raw URLs in parentheses for better layout
+          sib.querySelectorAll('li').forEach(li => {
+            let liHtml = li.innerHTML;
+            // Catch Title (<a href="...">...</a>) patterns from markdown auto-linking
+            liHtml = liHtml.replace(/([^<]+)\s*\(\s*<a\s+href="([^"]+)"[^>]*>.*?<\/a>\s*\)/gi, '<a href="$2">$1</a>');
+            // Catch Title (http...) patterns if not auto-linked
+            liHtml = liHtml.replace(/([^<]+)\s*\(\s*(https?:\/\/[^\s)]+)\s*\)/gi, '<a href="$2">$1</a>');
+            li.innerHTML = liHtml;
+          });
+        }
       }
     });
 
@@ -529,6 +553,4 @@
   // Initial load
   fetchDigest('./latest.md');
 </script>
-
-</body>
-</html>
+</body></html>
