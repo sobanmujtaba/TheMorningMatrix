@@ -438,6 +438,10 @@
   const btnLatest = document.getElementById('btn-latest');
 
   // ---- safe DOM text node highlighter ----
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
   function applyHighlight(container, keyword) {
     if (!keyword) return;
     const re = new RegExp(`(${keyword.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi');
@@ -450,7 +454,8 @@
       const val = node.nodeValue;
       if (re.test(val)) {
         const span = document.createElement('span');
-        span.innerHTML = val.replace(re, '<mark>$1</mark>');
+        // Escape the raw text first, THEN wrap our matches in <mark>
+        span.innerHTML = escapeHtml(val).replace(re, '<mark>$1</mark>');
         node.parentNode.replaceChild(span, node);
       }
     });
