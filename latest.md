@@ -1,4 +1,3 @@
-# The Morning Matrix — 2026-08-18  
+# The Morning Matrix — 2026-08-18
 
-## 1. Lead Story  
-- **Headline & Summary**: *Trump‑linked crypto firm Tetra Capital backs a new venture that will market AI models built on data and compute services sourced from Chinese companies currently barred from U.S. export controls.*  The partnership, announced by Tetra’s “AI‑Bridge” initiative, aims to sidestep U.S. restrictions by routing hardware, talent, and proprietary datasets through offshore entities, then re‑packaging the output for U.S. customers.  The move raises immediate legal questions about export‑control compliance and the broader risk of a “sanctions‑evasion” AI supply chain.  ([Reuters](https://news.google.com/rss/articles/CBMivAFBVV95cUxQTHhDcEM5c
+*Error: LLM returned an empty response. Please check Groq API console or reduce article count.*
